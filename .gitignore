@@ -1,5 +1,27 @@
-.venv/
-data/
+# Python
 __pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+
+# Jupyter
 .ipynb_checkpoints/
-*.pyc
+
+# Models
+notebooks/models/
+*.pkl
+*.joblib
+*.bin
+*.pt
+*.pth
+*.onnx
+
+# Dataset
+data/
+
+# OS
+.DS_Store
+Thumbs.db
