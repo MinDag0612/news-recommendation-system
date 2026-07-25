@@ -44,5 +44,5 @@ class RecommendationEngine:
                 "topic_score": topic_score
             })
                 
-        scores.sort(key=lambda x: x["score"], reverse=True)
-        return scores
+        self.score_list = scores.sort(key=lambda x: x["score"], reverse=True)
+        return self.score_list

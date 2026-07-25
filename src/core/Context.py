@@ -54,14 +54,49 @@ class VectorContext:
         behaviours = behaviours[["user_id", "history"]]
         behaviours = behaviours.dropna(subset=["history"])
 
-        # sample_behaviours = behaviours.sample(n=10, random_state=42).reset_index(drop=True)
-
-        output_dir = r"D:\CDNC\MIND-research\data\sample"
-
-        behaviours.to_csv(os.path.join(output_dir, "behaviours.csv"), index=False)
-
         return behaviours
+    
+    def createImpressed(self):
+        impressions_path = os.path.join(self.destination, "behaviors.tsv")
+
+        columns_impressions = ["user_id", "time", "history", "impressions"]
+
+        impressions_df = pd.read_csv(
+            impressions_path,
+            sep="\t",
+            names=columns_impressions,
+        )
+
+        impressions_df = impressions_df[["user_id", "impressions"]]
+        impressions_df = impressions_df.dropna(subset=["impressions"])
+        
+        impressions_df = impressions_df.to_dict(orient="records")
+        
+        self.impressions = {}
+        
+        for i in impressions_df:
+            user_id = i["user_id"]
+            temp = i["impressions"].split(" ")
+            news_list = []
+            
+            for j in temp:
+                news_id, label = j.split("-")
+                
+                news_list.append(
+                    {
+                        "news_id": news_id,
+                        "label": int(label)
+                    }
+                )
+                
+            
+            self.impressions.setdefault(i["user_id"], []).append(news_list)
+            # print(self.impressions[user_id])
+            
+        return self.impressions
+        
     
 context = VectorContext()
 context.createTitleList()
 context.createHistory()
+context.createImpressed()
