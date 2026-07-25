@@ -39,13 +39,13 @@ class Metrix:
     def ndcg(self, k):
         labels, _ = self._prepare()
 
-        labels = labels[:k]
+        ranked_labels = labels[:k]
 
         dcg = 0
-        for i, rel in enumerate(labels):
+        for i, rel in enumerate(ranked_labels):
             dcg += (2**rel - 1) / np.log2(i + 2)
 
-        ideal = sorted(labels, reverse=True)
+        ideal = sorted(labels, reverse=True)[:k]
 
         idcg = 0
         for i, rel in enumerate(ideal):

@@ -1,4 +1,5 @@
 import pickle
+from pathlib import Path
 import pandas as pd
 
 from src.core.Models import Models
@@ -8,7 +9,13 @@ from src.topic.TopicTraining import BERTopicVector
 
 model = Models()
 
-vector_df = pd.read_pickle("vectors/semantic_vectors.pkl")
+project_root = Path(__file__).resolve().parents[2]
+vectors_dir = project_root / "vectors"
+models_dir = project_root / "models"
+vectors_dir.mkdir(parents=True, exist_ok=True)
+models_dir.mkdir(parents=True, exist_ok=True)
+
+vector_df = pd.read_pickle(vectors_dir / "semantic_vectors.pkl")
 
 semantic_vector = (
     vector_df
@@ -23,11 +30,11 @@ bertopic.get_vector(
     semantic_vector
 )
 
-with open("vectors/topic_vectors.pkl", "wb") as f:
+with open(vectors_dir / "topic_vectors.pkl", "wb") as f:
     pickle.dump(
         bertopic.topic_vector,
         f,
         protocol=pickle.HIGHEST_PROTOCOL,
     )
 
-bertopic.model.save("models/bertopic")
+bertopic.model.save(models_dir / "bertopic")

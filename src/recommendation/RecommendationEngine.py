@@ -28,8 +28,7 @@ class RecommendationEngine:
 
         return self.score(semantic, topic), semantic, topic
 
-    def recommend(self, user_vector, candidate_news):
-        # news_vector = [self.represented_vector[i] for i in candidate_news]
+    def score_candidates(self, user_vector, candidate_news):
         scores = []
         
         for news_id in candidate_news:
@@ -45,9 +44,27 @@ class RecommendationEngine:
                 "semantic_score": semantic_score,
                 "topic_score": topic_score
             })
-                
-        self.score_list = scores.sort(key=lambda x: x["score"], reverse=True)
-        return self.score_list
+
+        return scores
+
+    @staticmethod
+    def rank(scores):
+        return sorted(
+            scores,
+            key=lambda x: x["score"],
+            reverse=True,
+        )
+
+    @staticmethod
+    def select_top_k(ranked_scores, k):
+        if k <= 0:
+            raise ValueError("k must be greater than zero")
+        return ranked_scores[:k]
+
+    def recommend(self, user_vector, candidate_news, k=10):
+        scores = self.score_candidates(user_vector, candidate_news)
+        self.score_list = self.rank(scores)
+        return self.select_top_k(self.score_list, k)
     
     def calculate_by_impress(self, user_vector, impressed_list):
         impress_score = []
@@ -72,5 +89,3 @@ class RecommendationEngine:
             impress_score.append(impress_score_set)
             
         return impress_score
-            
-            

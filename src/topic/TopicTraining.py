@@ -17,13 +17,13 @@ class BERTopicVector(Vector):
     def get_vector(self, title_list, semantic_vector=None):
         self.title_list = title_list
 
+        if semantic_vector is None:
+            print(self.notice)
+            return None
+
         titles = [news["title"] for news in title_list]
 
         embeddings = np.array([semantic_vector[news["news_id"]] for news in title_list])
-
-        if semantic_vector is None:
-            print(self.notice)
-            return
 
         topics, probabilities = self.model.fit_transform(
             titles,
