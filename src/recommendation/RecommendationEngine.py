@@ -1,4 +1,6 @@
 from sklearn.metrics.pairwise import cosine_similarity
+from src.core.Context import context
+import pickle
 
 class RecommendationEngine:
     @staticmethod
@@ -46,3 +48,29 @@ class RecommendationEngine:
                 
         self.score_list = scores.sort(key=lambda x: x["score"], reverse=True)
         return self.score_list
+    
+    def calculate_by_impress(self, user_vector, impressed_list):
+        impress_score = []
+        for impress_set in impressed_list:
+            impress_score_set = []
+            for news in impress_set:
+                news_id = news["news_id"]
+                label = news["label"]
+            
+                score, _, _ = self.calculate_similarity(
+                    user_vector,
+                    self.represented_vector[news_id]
+                )
+            
+                news_item = {
+                    "news_id": news_id,
+                    "label": label,
+                    "score": score
+                }
+                
+                impress_score_set.append(news_item)
+            impress_score.append(impress_score_set)
+            
+        return impress_score
+            
+            

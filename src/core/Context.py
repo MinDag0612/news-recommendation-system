@@ -54,7 +54,8 @@ class VectorContext:
         behaviours = behaviours[["user_id", "history"]]
         behaviours = behaviours.dropna(subset=["history"])
 
-        return behaviours
+        self.behaviours = behaviours
+        return self.behaviours
     
     def createImpressed(self):
         impressions_path = os.path.join(self.destination, "behaviors.tsv")
