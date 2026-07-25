@@ -1,6 +1,7 @@
 from sklearn.metrics.pairwise import cosine_similarity
 
 class RecommendationEngine:
+    @staticmethod
     def cosine(v1, v2):
         return cosine_similarity(
             v1.reshape(1, -1),
@@ -13,12 +14,12 @@ class RecommendationEngine:
         self.score = lambda semantic, topic: self.alpha * semantic + (1 - self.alpha) * topic
 
     def calculate_similarity(self, user_vector, news_vector):
-        semantic = self.cosine(
+        semantic = RecommendationEngine.cosine(
             user_vector["semantic"],
             news_vector["semantic"]
         )
 
-        topic = self.cosine(
+        topic = RecommendationEngine.cosine(
             user_vector["topic_distribution"],
             news_vector["topic_distribution"]
         )
@@ -35,6 +36,13 @@ class RecommendationEngine:
                 self.represented_vector[news_id]
             )
 
-            scores.append((news_id, score, semantic_score, topic_score))
+            # scores.append((news_id, score, semantic_score, topic_score))
+            scores.append({
+                "news_id": news_id,
+                "score": score,
+                "semantic_score": semantic_score,
+                "topic_score": topic_score
+            })
                 
-        scores.sort(key=lambda x: x[1], reverse=True)
+        scores.sort(key=lambda x: x["score"], reverse=True)
+        return scores
