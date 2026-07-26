@@ -1,13 +1,14 @@
 import numpy as np
 
 class URV:
-    def __init__(self, represented_vector, user_behaviours):
+    def __init__(self, represented_vector):
         self.represented_vector = represented_vector
-        self.user_behaviours = user_behaviours
-        self.user_representation_vector = None
+        # self.user_behaviours = user_behaviours
+        # self.user_representation_vector = None
         
-    def getURV(self, user_id: str):
-        user_history_id = self.user_behaviours[user_id].split()
+    def getURV(self, user_history: dict):
+        user_history_id = user_history.split()
+        # behavior_id = user_behaviours["behavior_id"]
         
         user_history_vector = [
             self.represented_vector[news_id]
@@ -15,7 +16,7 @@ class URV:
         ]
 
         user_representation_vector = {
-                "user_id": user_id,
+                # "behavior_id": behavior_id,
                 "semantic": np.mean(
                     [v["semantic"] for v in user_history_vector],
                     axis=0

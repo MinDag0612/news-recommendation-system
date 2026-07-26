@@ -43,7 +43,7 @@ class VectorContext:
     def createHistory(self):
         behaviours_path = os.path.join(self.destination, "behaviors.tsv")
 
-        columns_behaviours = ["user_id", "time", "history", "impressions"]
+        columns_behaviours = ["behavior_id", "user_id", "time", "history", "impressions"]
 
         behaviours = pd.read_csv(
             behaviours_path,
@@ -51,7 +51,7 @@ class VectorContext:
             names=columns_behaviours,
         )
 
-        behaviours = behaviours[["user_id", "history"]]
+        behaviours = behaviours[["behavior_id", "user_id", "history"]]
         behaviours = behaviours.dropna(subset=["history"])
 
         self.behaviours = behaviours
@@ -60,7 +60,7 @@ class VectorContext:
     def createImpressed(self):
         impressions_path = os.path.join(self.destination, "behaviors.tsv")
 
-        columns_impressions = ["user_id", "time", "history", "impressions"]
+        columns_impressions = ["behavior_id", "user_id", "time", "history", "impressions"]
 
         impressions_df = pd.read_csv(
             impressions_path,
@@ -68,16 +68,16 @@ class VectorContext:
             names=columns_impressions,
         )
 
-        impressions_df = impressions_df[["user_id", "impressions"]]
+        impressions_df = impressions_df[["behavior_id", "impressions"]]
         impressions_df = impressions_df.dropna(subset=["impressions"])
         
         impressions_df = impressions_df.to_dict(orient="records")
         
         self.impressions = {}
         
-        for i in impressions_df:
-            user_id = i["user_id"]
-            temp = i["impressions"].split(" ")
+        for impress in impressions_df:
+            behavior_id = impress["behavior_id"]
+            temp = impress["impressions"].split(" ")
             news_list = []
             
             for j in temp:
@@ -91,9 +91,9 @@ class VectorContext:
                 )
                 
             
-            self.impressions.setdefault(i["user_id"], []).append(news_list)
+            self.impressions.setdefault(impress["behavior_id"], []).extend(news_list)
             # print(self.impressions[user_id])
-            
+        
         return self.impressions
         
     

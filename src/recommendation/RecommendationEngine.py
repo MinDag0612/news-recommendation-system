@@ -1,14 +1,14 @@
 from sklearn.metrics.pairwise import cosine_similarity
 from src.core.Context import context
 import pickle
+import numpy as np
 
 class RecommendationEngine:
     @staticmethod
     def cosine(v1, v2):
-        return cosine_similarity(
-            v1.reshape(1, -1),
-            v2.reshape(1, -1)
-        )[0][0]
+        return np.dot(v1, v2) / (
+            np.linalg.norm(v1) * np.linalg.norm(v2)
+        )
         
     def __init__(self, represented_vector, alpha=0.5):
         self.represented_vector = represented_vector
@@ -45,31 +45,30 @@ class RecommendationEngine:
                 "semantic_score": semantic_score,
                 "topic_score": topic_score
             })
-                
-        self.score_list = scores.sort(key=lambda x: x["score"], reverse=True)
+            
+        scores.sort(key=lambda x: x["score"], reverse=True)
+        self.score_list = scores
+        
         return self.score_list
     
     def calculate_by_impress(self, user_vector, impressed_list):
         impress_score = []
-        for impress_set in impressed_list:
-            impress_score_set = []
-            for news in impress_set:
-                news_id = news["news_id"]
-                label = news["label"]
+        for impress in impressed_list:
+            news_id = impress["news_id"]
+            label = impress["label"]
+        
+            score, _, _ = self.calculate_similarity(
+                user_vector,
+                self.represented_vector[news_id]
+            )
+        
+            news_item = {
+                "news_id": news_id,
+                "label": label,
+                "score": score
+            }
             
-                score, _, _ = self.calculate_similarity(
-                    user_vector,
-                    self.represented_vector[news_id]
-                )
-            
-                news_item = {
-                    "news_id": news_id,
-                    "label": label,
-                    "score": score
-                }
-                
-                impress_score_set.append(news_item)
-            impress_score.append(impress_score_set)
+            impress_score.append(news_item)
             
         return impress_score
             
