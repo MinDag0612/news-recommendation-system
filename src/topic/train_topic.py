@@ -3,7 +3,7 @@ import pandas as pd
 
 from src.core.Models import Models
 from src.core.Context import context
-from src.topic.TopicTraining import BERTopicVector
+from topic.BERTopicVector import BERTopicVector
 
 
 model = Models()

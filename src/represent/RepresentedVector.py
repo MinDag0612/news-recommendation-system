@@ -3,19 +3,17 @@ import pandas as pd
 from src.core.Vector import Vector
 
 class RepresentedVector(Vector):
-    def __init__(self, title_list, sentence_dict, bertopic_dict):
+    def __init__(self, title_list):
         self.title_list = title_list
-        self.sentence_dict = sentence_dict
-        self.bertopic_dict = bertopic_dict
         self.represented_vector = {}
 
-    def get_vector(self):
+    def get_vector(self, sentence_dict, bertopic_dict):
         self.represented_vector = {
             news["news_id"]: {
                 "title": news["title"],
-                "semantic": self.sentence_dict[news["news_id"]],
+                "semantic": sentence_dict[news["news_id"]],
                 # "topic": self.bertopic_dict[news["news_id"]]["topic"],
-                "topic_distribution": self.bertopic_dict[news["news_id"]][
+                "topic_distribution": bertopic_dict[news["news_id"]][
                     "probability"
                 ],
             }
@@ -41,13 +39,13 @@ class RepresentedVector(Vector):
 
         print("=" * 80)
 
-    def preview_vector(vector, preview_dims=4):
-        vector = [round(float(x), 4) for x in vector]
+    # def preview_vector(vector, preview_dims=4):
+    #     vector = [round(float(x), 4) for x in vector]
 
-        if len(vector) <= preview_dims * 2:
-            return vector
+    #     if len(vector) <= preview_dims * 2:
+    #         return vector
 
-        return vector[:preview_dims] + ["..."] + vector[-preview_dims:]
+    #     return vector[:preview_dims] + ["..."] + vector[-preview_dims:]
 
     def summary(self, sample_index=0, preview_dims=4):
 

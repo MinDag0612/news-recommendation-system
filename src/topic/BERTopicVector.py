@@ -18,24 +18,24 @@ class BERTopicVector(Vector):
         self.title_list = title_list
 
         titles = [news["title"] for news in title_list]
-
-        embeddings = np.array([semantic_vector[news["news_id"]] for news in title_list])
-
+        
         if semantic_vector is None:
             print(self.notice)
             return
+
+        embeddings = np.array([semantic_vector[news["news_id"]] for news in title_list])
 
         topics, probabilities = self.model.fit_transform(
             titles,
             embeddings,
         )
 
-        self.topic_vector = {
+        self.topics_vector = {
             news["news_id"]: {"topic": topic, "probability": probability}
             for news, topic, probability in zip(title_list, topics, probabilities)
         }
 
-        return self.topic_vector
+        return self.topics_vector
 
     def overview(self):
 
