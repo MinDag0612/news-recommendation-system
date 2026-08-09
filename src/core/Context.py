@@ -5,7 +5,7 @@ import pandas as pd
 class VectorContext:
     def __init__(self):
         self.title_list = None
-        self.destination = r"D:\CDNC\MIND-research\data\raw"
+        self.destination = r"..\data\raw"
 
     def createTitleList(self):
 
