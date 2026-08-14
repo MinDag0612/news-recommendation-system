@@ -1,15 +1,16 @@
-import os
+from pathlib import Path
 import pandas as pd
 
 
 class VectorContext:
-    def __init__(self):
+    def __init__(self, destination=None):
         self.title_list = None
-        self.destination = r"..\data\raw"
+        project_root = Path(__file__).resolve().parents[2]
+        self.destination = Path(destination) if destination else project_root / "data" / "raw"
 
     def createTitleList(self):
 
-        news_path = os.path.join(self.destination, "news.tsv")
+        news_path = self.destination / "news.tsv"
 
         columns = [
             "News_ID",
@@ -38,7 +39,7 @@ class VectorContext:
         return title_list
 
     def createImpressed(self):
-        impressions_path = os.path.join(self.destination, "behaviors.tsv")
+        impressions_path = self.destination / "behaviors.tsv"
 
         columns_impressions = [
             "behavior_id",
@@ -59,7 +60,6 @@ class VectorContext:
         ]
         
         impressions_df = impressions_df.dropna(subset=["history"])
-        impressions_df = impressions_df.dropna(subset=["impressions"])
         impressions_df = impressions_df.dropna(subset=["impressions"])
 
         impressions_df = impressions_df.to_dict(orient="records")

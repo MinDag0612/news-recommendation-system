@@ -38,14 +38,13 @@ class Metrix:
 
     def ndcg(self, k):
         labels, _ = self._prepare()
-
-        labels = labels[:k]
+        ranked_labels = labels[:k]
 
         dcg = 0
-        for i, rel in enumerate(labels):
+        for i, rel in enumerate(ranked_labels):
             dcg += (2**rel - 1) / np.log2(i + 2)
 
-        ideal = sorted(labels, reverse=True)
+        ideal = sorted(labels, reverse=True)[:k]
 
         idcg = 0
         for i, rel in enumerate(ideal):
@@ -56,10 +55,18 @@ class Metrix:
 
         return dcg / idcg
 
+    def hit_rate(self, k):
+        if not isinstance(k, int) or isinstance(k, bool) or k <= 0:
+            raise ValueError("k must be a positive integer")
+        labels, _ = self._prepare()
+        return float(any(label > 0 for label in labels[:k]))
+
     def evaluate(self):
         return {
             "AUC": self.auc(),
             "MRR": self.mrr(),
             "nDCG@5": self.ndcg(5),
-            "nDCG@10": self.ndcg(10)
+            "nDCG@10": self.ndcg(10),
+            "HitRate@5": self.hit_rate(5),
+            "HitRate@10": self.hit_rate(10),
         }

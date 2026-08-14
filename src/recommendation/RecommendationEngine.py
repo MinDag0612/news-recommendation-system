@@ -1,14 +1,12 @@
-from sklearn.metrics.pairwise import cosine_similarity
-from src.core.Context import context
-import pickle
 import numpy as np
 
 class RecommendationEngine:
     @staticmethod
     def cosine(v1, v2):
-        return np.dot(v1, v2) / (
-            np.linalg.norm(v1) * np.linalg.norm(v2)
-        )
+        denominator = np.linalg.norm(v1) * np.linalg.norm(v2)
+        if denominator == 0:
+            return 0.0
+        return float(np.dot(v1, v2) / denominator)
         
     def __init__(self, represented_vector, alpha=0.5):
         self.represented_vector = represented_vector
@@ -28,11 +26,24 @@ class RecommendationEngine:
 
         return self.score(semantic, topic), semantic, topic
 
-    def recommend(self, user_vector, candidate_news):
-        # news_vector = [self.represented_vector[i] for i in candidate_news]
+    def recommend(self, user_vector, candidate_news, top_k=10, user_history=None):
+        if not isinstance(top_k, int) or isinstance(top_k, bool) or top_k <= 0:
+            raise ValueError("top_k must be a positive integer")
+
+        if isinstance(user_history, str):
+            read_news = set(user_history.split())
+        else:
+            read_news = set(user_history or [])
+
         scores = []
-        
+        seen = set()
         for news_id in candidate_news:
+            if news_id in seen or news_id in read_news:
+                continue
+            seen.add(news_id)
+            if news_id not in self.represented_vector:
+                continue
+
             score, semantic_score, topic_score = self.calculate_similarity(
                 user_vector,
                 self.represented_vector[news_id]
@@ -47,7 +58,7 @@ class RecommendationEngine:
             })
             
         scores.sort(key=lambda x: x["score"], reverse=True)
-        self.score_list = scores
+        self.score_list = scores[:top_k]
         
         return self.score_list
     
@@ -56,20 +67,22 @@ class RecommendationEngine:
         for impress in impressed_list:
             news_id = impress["news_id"]
             label = impress["label"]
-        
+
+            if news_id not in self.represented_vector:
+                continue
+
             score, _, _ = self.calculate_similarity(
                 user_vector,
                 self.represented_vector[news_id]
             )
-        
+
             news_item = {
                 "news_id": news_id,
                 "label": label,
                 "score": score
             }
-            
+
             impress_score.append(news_item)
-            
+
         return impress_score
-            
             
