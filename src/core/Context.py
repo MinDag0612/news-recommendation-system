@@ -62,10 +62,8 @@ class VectorContext:
         
         impressions_df = impressions_df.dropna(subset=["history"])
         impressions_df = impressions_df.dropna(subset=["impressions"])
-<<<<<<< HEAD
-=======
         impressions_df = impressions_df.dropna(subset=["impressions"])
->>>>>>> de0160d ([fix] Clear code)
+
 
         impressions_df = impressions_df.to_dict(orient="records")
 
