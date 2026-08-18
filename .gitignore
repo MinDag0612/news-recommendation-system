@@ -49,6 +49,7 @@ vectors/
 # ===========================
 data/raw/
 data/processed/
+data/primary/
 
 # Nếu dùng MIND sample tự tạo thì cũng có thể ignore
 # data/sample/

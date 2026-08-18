@@ -20,7 +20,7 @@ class BERTopicVector(Vector):
         titles = [news["title"] for news in title_list]
         
         if semantic_vector is None:
-            print(self.notice)
+            # print(self.notice)
             return
 
         embeddings = np.array([semantic_vector[news["news_id"]] for news in title_list])

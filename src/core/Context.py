@@ -3,10 +3,18 @@ import pandas as pd
 
 
 class VectorContext:
-    def __init__(self, destination=None):
+    def __init__(self, destination):
+        """Create a context from the directory containing MIND TSV files.
+
+        ``destination`` can be an absolute path or a path relative to the
+        project root, for example ``data/primary/train_set``.
+        """
         self.title_list = None
         project_root = Path(__file__).resolve().parents[2]
-        self.destination = Path(destination) if destination else project_root / "data" / "raw"
+        destination = Path(destination)
+        self.destination = (
+            destination if destination.is_absolute() else project_root / destination
+        )
 
     def createTitleList(self):
 
@@ -40,63 +48,80 @@ class VectorContext:
         return title_list
 
     def createImpressed(self):
-        impressions_path = self.destination / "behaviors.tsv"
+            impressions_path = self.destination / "behaviors.tsv"
 
-        columns_impressions = [
-            "behavior_id",
-            "user_id",
-            "time",
-            "history",
-            "impressions",
-        ]
+            columns_impressions = [
+                "behavior_id",
+                "user_id",
+                "time",
+                "history",
+                "impressions",
+            ]
 
-        impressions_df = pd.read_csv(
-            impressions_path,
-            sep="\t",
-            names=columns_impressions,
-        )
+            impressions_df = pd.read_csv(
+                impressions_path,
+                sep="\t",
+                names=columns_impressions,
+            )
 
-        impressions_df = impressions_df[
-            ["behavior_id", "user_id", "history", "impressions"]
-        ]
-        
-        impressions_df = impressions_df.dropna(subset=["history"])
-        impressions_df = impressions_df.dropna(subset=["impressions"])
-        impressions_df = impressions_df.dropna(subset=["impressions"])
+            impressions_df = impressions_df[
+                ["behavior_id", "user_id", "history", "impressions"]
+            ]
+            
+            impressions_df = impressions_df.dropna(subset=["history"])
+            impressions_df = impressions_df.dropna(subset=["impressions"])
 
+            impressions_df = impressions_df.to_dict(orient="records")
 
-        impressions_df = impressions_df.to_dict(orient="records")
+            self.impressions = {}
 
-        self.impressions = {}
+            for impress in impressions_df:
+                behavior_id = impress["behavior_id"]
+                user_id = impress["user_id"]
+                history = impress["history"]
+                impression_list = impress["impressions"].split(" ")
+                news_list = []
 
-        for impress in impressions_df:
-            behavior_id = impress["behavior_id"]
-            user_id = impress["user_id"]
-            history = impress["history"]
-            impression_list = impress["impressions"].split(" ")
-            news_list = []
+                for j in impression_list:
+                    news_id, label = j.split("-")
+                    impression_item = {
+                        "news_id": news_id,
+                        "label": int(label),
+                    }
 
-            for j in impression_list:
-                news_id, label = j.split("-")
-                impression_item = {
-                    "news_id": news_id,
-                    "label": int(label),
+                    news_list.append(impression_item)
+                
+                behavior_row = {
+                    "user_id": user_id,
+                    "history": history,
+                    "impressions": news_list
                 }
 
-                news_list.append(impression_item)
-            
-            behavior_row = {
-                "user_id": user_id,
-                "history": history,
-                "impressions": news_list
+                self.impressions[behavior_id] = behavior_row
+                # print(self.impressions[user_id])
+
+            return self.impressions
+    
+    def createImpressionRow(self, impress):
+        behavior_id = impress["behavior_id"]
+        user_id = impress["user_id"]
+        history = impress["history"]
+        impression_list = impress["impressions"].split(" ")
+        news_list = []
+
+        for j in impression_list:
+            news_id, label = j.split("-")
+            impression_item = {
+                "news_id": news_id,
+                "label": int(label),
             }
 
-            self.impressions[behavior_id] = behavior_row
-            # print(self.impressions[user_id])
+            news_list.append(impression_item)
+        
+        behavior_row = {
+            "user_id": user_id,
+            "history": history,
+            "impressions": news_list
+        }
 
-        return self.impressions
-
-
-context = VectorContext()
-context.createTitleList()
-context.createImpressed()
+        return behavior_row
