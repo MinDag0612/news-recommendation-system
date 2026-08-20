@@ -3,24 +3,26 @@ import pandas as pd
 from src.core.Vector import Vector
 
 class RepresentedVector(Vector):
-    def __init__(self, title_list):
-        self.title_list = title_list
-        self.represented_vector = {}
+    def __init__(self, semantic_model, topic_model):
+        self.semantic_model = semantic_model
+        self.topic_model = topic_model
 
-    def get_vector(self, sentence_dict, bertopic_dict):
-        self.represented_vector = {
-            news["news_id"]: {
-                "title": news["title"],
-                "semantic": sentence_dict[news["news_id"]],
-                # "topic": self.bertopic_dict[news["news_id"]]["topic"],
-                "topic_distribution": bertopic_dict[news["news_id"]][
-                    "probability"
-                ],
-            }
-            for news in self.title_list
+    def get_vector(self, title: str):
+        semantic = self.semantic_model.encode(
+            [title],
+            show_progress_bar=False
+        )
+
+        _, topic = self.topic_model.transform(
+            [title],
+            embeddings=semantic
+        )
+        represented_vector = {
+            "semantic": semantic[0],
+            "topic_distribution": topic[0]
         }
-
-        return self.represented_vector
+        
+        return represented_vector
 
     def overview(self):
         print("=" * 80)
