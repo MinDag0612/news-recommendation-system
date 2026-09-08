@@ -51,7 +51,7 @@ vectors/**/*.pth
 vectors/**/*.joblib
 
 results/prediction.txt
-results/ranked_results.json
+results/ranked_results.jsonl
 
 # ===========================
 # Dataset
