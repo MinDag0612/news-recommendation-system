@@ -101,6 +101,48 @@ class VectorContext:
                 # print(self.impressions[user_id])
 
             return self.impressions
+        
+    def createImpressedNoLabel(self, chunksize=5000):
+        impressions_path = self.destination / "behaviors.tsv"
+
+        columns = [
+            "behavior_id",
+            "user_id",
+            "time",
+            "history",
+            "impressions",
+        ]
+
+        for df in pd.read_csv(
+            impressions_path,
+            sep="\t",
+            names=columns,
+            chunksize=chunksize,
+            keep_default_na=False
+        ):
+            df = df[
+                ["behavior_id", "user_id", "history", "impressions"]
+            ]
+
+            # df = df.dropna(subset=["history", "impressions"])
+
+            impressions = {}
+
+            for row in df.itertuples(index=False):
+                impression_list = [
+                    {
+                        "news_id": x.split("-")[0]
+                    }
+                    for x in row.impressions.split()
+                ]
+
+                impressions[row.behavior_id] = {
+                    "user_id": row.user_id,
+                    "history": row.history,
+                    "impressions": impression_list,
+                }
+
+            yield impressions
     
     def createImpressionRow(self, impress):
         behavior_id = impress["behavior_id"]
@@ -110,10 +152,10 @@ class VectorContext:
         news_list = []
 
         for j in impression_list:
-            news_id, label = j.split("-")
+            # news_id, label = j.split("-")
             impression_item = {
-                "news_id": news_id,
-                "label": int(label),
+                "news_id": j,
+                # "label": int(label),
             }
 
             news_list.append(impression_item)

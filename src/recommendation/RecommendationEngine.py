@@ -26,7 +26,7 @@ class RecommendationEngine:
 
         return self.score(semantic, topic), semantic, topic
 
-    def recommend(self, user_vector, candidate_news):
+    def recommended_with_label(self, user_vector, candidate_news):
         # news_vector = [self.represented_vector[i] for i in candidate_news]
         scores = []
         
@@ -49,6 +49,30 @@ class RecommendationEngine:
         self.score_list = scores
         
         return self.score_list
+    
+    def recommended_no_label(self, user_vector, candidate_news):
+            # news_vector = [self.represented_vector[i] for i in candidate_news]
+            scores = []
+            
+            for news in candidate_news:
+                score, _, _ = self.calculate_similarity(
+                    user_vector,
+                    news["vector"]
+                )
+    
+                # scores.append((news_id, score, semantic_score, topic_score))
+                scores.append({
+                    "news_id": news["news_id"],
+                    # "label": news["label"],
+                    "score": float(score),
+                    # "semantic_score": semantic_score,
+                    # "topic_score": topic_score
+                })
+                
+            scores.sort(key=lambda x: x["score"], reverse=True)
+            self.score_list = scores
+            
+            return self.score_list
     
     # def calculate_by_impress(self, user_vector, impressed_list):
     #     impress_score = []
