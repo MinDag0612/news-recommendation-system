@@ -73,3 +73,6 @@ data/primary/
 # Environment variables
 # ===========================
 .env
+
+results/
+results/ranked_results.jsonl
