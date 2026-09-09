@@ -1,0 +1,15 @@
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+
+# Semantic encoder
+sentence-transformers==5.1.0
+
+# BERTopic encoder and its clustering/reduction components
+bertopic==0.17.3
+hdbscan==0.8.40
+umap-learn==0.5.7
+scikit-learn==1.7.2
+
+# Explicit runtime dependencies used by the model code and API responses
+numpy==2.0.2
+pandas==2.2.3

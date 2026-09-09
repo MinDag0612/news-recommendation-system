@@ -76,3 +76,8 @@ data/primary/
 
 results/
 results/ranked_results.jsonl
+
+# ===========================
+# Demo models
+# ===========================
+demo\model\bertopic

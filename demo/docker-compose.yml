@@ -1,0 +1,31 @@
+services:
+
+  semantic:
+    build:
+      context: ..
+      dockerfile: demo/semantic/dockerfile
+    ports:
+      - "8001:8001"
+
+  topic:
+    build:
+      context: ..
+      dockerfile: demo/topic/dockerfile
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./model:/app/demo/model
+    environment:
+      TOPIC_MODEL_PATH: /app/demo/model/bertopic
+
+  recommend:
+    build:
+      context: ..
+      dockerfile: demo/recommend/dockerfile
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./model:/app/demo/model
+    depends_on:
+      - semantic
+      - topic
