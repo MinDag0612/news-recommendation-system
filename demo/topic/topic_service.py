@@ -6,7 +6,7 @@ app = FastAPI()
 
 encoder = TopicEncoder()
 
-@app.get("/topic-health")
+@app.get("/health")
 def health():
     return {"status": "topic healthy"}
 
