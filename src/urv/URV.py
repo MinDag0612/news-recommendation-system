@@ -4,6 +4,19 @@ class URV:
     def __init__(self):
         pass
 
+    @staticmethod
+    def _mean_vectors(vectors):
+        vectors = iter(vectors)
+        first = np.asarray(next(vectors), dtype=np.float32)
+        total = first.copy()
+        count = 1
+
+        for vector in vectors:
+            total += np.asarray(vector, dtype=np.float32)
+            count += 1
+
+        return total / count
+
         
     def getURV(self, user_history: dict, represented_vector):
         user_history_id = user_history.split()
@@ -16,13 +29,11 @@ class URV:
 
         user_representation_vector = {
                 # "behavior_id": behavior_id,
-                "semantic": np.mean(
-                    [v["semantic"] for v in user_history_vector],
-                    axis=0
+                "semantic": self._mean_vectors(
+                    v["semantic"] for v in user_history_vector
                 ),
-                "topic_distribution": np.mean(
-                    [v["topic_distribution"] for v in user_history_vector],
-                    axis=0
+                "topic_distribution": self._mean_vectors(
+                    v["topic_distribution"] for v in user_history_vector
                 )
             }
         
@@ -32,13 +43,11 @@ class URV:
     def getURVFromVector(self, user_history_vector):
         user_representation_vector = {
                 # "behavior_id": behavior_id,
-                "semantic": np.mean(
-                    [v["semantic"] for v in user_history_vector],
-                    axis=0
+                "semantic": self._mean_vectors(
+                    v["semantic"] for v in user_history_vector
                 ),
-                "topic_distribution": np.mean(
-                    [v["topic_distribution"] for v in user_history_vector],
-                    axis=0
+                "topic_distribution": self._mean_vectors(
+                    v["topic_distribution"] for v in user_history_vector
                 )
             }
         

@@ -42,7 +42,16 @@ models/
 # ===========================
 # Generated Vectors
 # ===========================
-vectors/
+vectors/**/*.pkl
+vectors/**/*.npy
+vectors/**/*.npz
+vectors/**/*.bin
+vectors/**/*.pt
+vectors/**/*.pth
+vectors/**/*.joblib
+
+results/prediction.txt
+results/ranked_results.jsonl
 
 # ===========================
 # Dataset
@@ -64,3 +73,11 @@ data/primary/
 # Environment variables
 # ===========================
 .env
+
+results/
+results/ranked_results.jsonl
+
+# ===========================
+# Demo models
+# ===========================
+demo/model/bertopic/

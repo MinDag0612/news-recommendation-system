@@ -41,14 +41,6 @@ class RepresentedVector(Vector):
 
         print("=" * 80)
 
-    # def preview_vector(vector, preview_dims=4):
-    #     vector = [round(float(x), 4) for x in vector]
-
-    #     if len(vector) <= preview_dims * 2:
-    #         return vector
-
-    #     return vector[:preview_dims] + ["..."] + vector[-preview_dims:]
-
     def summary(self, sample_index=0, preview_dims=4):
 
         news = self.title_list[sample_index]
