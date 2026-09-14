@@ -1,0 +1,29 @@
+{
+  "model": "models/mind_small/bertopic.pkl",
+  "model_sha256": "2966739abce6fa2d4ffa4061d141a30a6678b555569b159dbc26421664933668",
+  "vectors_sha256": "6f5fbb91d01f920901212129a622a64911f2ef78de7b82cea68fd4cba10fa757",
+  "sample_news_ids": [
+    "N55528",
+    "N21791",
+    "N19660",
+    "N4483",
+    "N12254",
+    "N4121",
+    "N18511",
+    "N46039",
+    "N55844",
+    "N34614",
+    "N29964",
+    "N31124",
+    "N8320",
+    "N46461",
+    "N26147",
+    "N39563"
+  ],
+  "topic_dimensions": 342,
+  "max_absolute_error": 0.0,
+  "rtol": 1e-05,
+  "atol": 1e-07,
+  "matched": true,
+  "scope": "Topic transform sample using saved semantic embeddings; not a full evaluation"
+}

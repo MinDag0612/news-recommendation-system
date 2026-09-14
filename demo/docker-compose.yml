@@ -14,7 +14,7 @@ services:
     ports:
       - "8002:8002"
     volumes:
-      - ./model:/app/demo/model
+      - ../models/bertopic:/app/demo/model/bertopic:ro
     environment:
       TOPIC_MODEL_PATH: /app/demo/model/bertopic
 
@@ -25,7 +25,14 @@ services:
     ports:
       - "8003:8003"
     volumes:
-      - ./model:/app/demo/model
+      - ../data/raw:/app/data/raw:ro
+      - ../vectors/mind_small:/app/vectors/mind_small:ro
+      - ../models/mind_small/bertopic.pkl:/app/models/mind_small/bertopic.pkl:ro
+    environment:
+      MIND_DATA_DIR: /app/data/raw
+      MIND_VECTOR_DIR: /app/vectors/mind_small
+      MIND_VERIFICATION_FILE: /app/demo/mind_verification.json
+      MIND_MODEL_FILE: /app/models/mind_small/bertopic.pkl
     depends_on:
       - semantic
       - topic
